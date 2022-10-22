@@ -10,7 +10,7 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-static HELLO: &[u8] = b"Titanium!!";
+static HELLO: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVW";
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {

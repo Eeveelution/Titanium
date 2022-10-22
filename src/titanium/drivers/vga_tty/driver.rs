@@ -34,6 +34,7 @@ impl CharacterColor {
 }
 
 #[derive(Copy)]
+#[repr(C)]
 pub struct ScreenCharacter {
     ascii_character: u8,
     color_code: CharacterColor,
@@ -48,15 +49,20 @@ impl Clone for ScreenCharacter {
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
+#[repr(transparent)]
 pub struct VgaBuffer {
     chars: [[ScreenCharacter; BUFFER_WIDTH]; BUFFER_HEIGHT],
+}
+
+pub struct VgaWriter {
+    buffer: &'static mut VgaBuffer,
     current_column: usize,
     current_row: usize,
 }
 
-impl TtyOutput for VgaBuffer {
+impl TtyOutput for VgaWriter {
     fn print(&mut self, bytes: &[u8]) {
-        for (i, &byte) in bytes.iter().enumerate() {
+        for (_, &byte) in bytes.iter().enumerate() {
             //unsafe {
             //    *VGA_BUFFER.offset(i as isize * 2) = byte;
             //    *VGA_BUFFER.offset(i as isize * 2 + 1) = 0xb;
@@ -67,8 +73,8 @@ impl TtyOutput for VgaBuffer {
     }
 }
 
-impl VgaBuffer {
-    fn new() -> VgaBuffer {
+impl VgaWriter {
+    fn new() -> VgaWriter {
         let empty = ScreenCharacter { 
             ascii_character: 0, 
             color_code: 
@@ -78,8 +84,8 @@ impl VgaBuffer {
                 ) 
         };
 
-        VgaBuffer { 
-            chars: unsafe { *(0xb8000 as *mut [[ScreenCharacter; BUFFER_WIDTH]; BUFFER_HEIGHT]) }, 
+        VgaWriter { 
+            buffer: unsafe { &mut *(0xb8000 as *mut VgaBuffer) }, 
             current_column: 0, 
             current_row: 0 
         }
@@ -95,15 +101,17 @@ impl VgaBuffer {
                     self.current_row += 1;
                 }
 
-                self.chars[self.current_row][self.current_column] = ScreenCharacter {
+                self.buffer.chars[self.current_row][self.current_column] = ScreenCharacter {
                     ascii_character: byte.clone(),
                     color_code: color
-                }
+                };
+
+                self.current_column += 1;
             }
         }
     }
 }
 
 pub fn create_tty_output() -> impl TtyOutput {
-    return VgaBuffer::new();
+    return VgaWriter::new();
 }

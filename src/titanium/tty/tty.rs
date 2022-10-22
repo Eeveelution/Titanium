@@ -14,7 +14,7 @@ pub fn print(data: &[u8]) {
 
     tty_outputs[0] = Some(&mut vga_tty);
 
-    for(i, output) in tty_outputs.iter().enumerate() {
+    for(i, output) in tty_outputs.iter_mut().enumerate() {
         match output {
             Some(tty_output) => tty_output.print(data), 
             None => (),
