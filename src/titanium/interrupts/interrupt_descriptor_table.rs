@@ -19,7 +19,8 @@ lazy_static! {
                             .set_stack_index(global_descriptor_table::DOUBLE_FAULT_STACK_INDEX);
         }
 
-        idt[pic8259::InterruptIndex::Timer.as_usize()].set_handler_fn(pic8259::int_pic8259);
+        idt[pic8259::InterruptIndex::Timer.as_usize()].set_handler_fn(pic8259::int_pic8259_timer);
+        idt[pic8259::InterruptIndex::Keyboard.as_usize()].set_handler_fn(pic8259::int_pic8259_keyboard);
 
         return idt;
     };

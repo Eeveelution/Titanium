@@ -9,5 +9,4 @@ pub fn os_main() {
     
     serial_println!("Testing serial printing!");
     serial_println!("{}", 1.0 / 3.0);
-
 }

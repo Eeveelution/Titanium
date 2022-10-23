@@ -1,3 +1,5 @@
+use x86_64::instructions::interrupts;
+
 pub trait TtyOutput : Send {
     fn print(&mut self, data: &[u8]);
 }
@@ -7,7 +9,9 @@ const REQUIRED_TTY_OUTPUTS: usize = 1;
 
 #[allow(dead_code)]
 pub fn print(tty_output: &mut impl TtyOutput, data: &[u8]) {
-    tty_output.print(data)
+    interrupts::without_interrupts(|| {
+        tty_output.print(data)
+    });
 }
 
 #[allow(dead_code)]

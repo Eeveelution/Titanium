@@ -11,6 +11,7 @@ use core::panic::PanicInfo;
 
 mod titanium;
 use titanium::qemu::QemuExitCode;
+use x86_64::instructions;
 
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -18,12 +19,18 @@ fn panic(_info: &PanicInfo) -> ! {
 
     titanium::qemu::exit_qemu(QemuExitCode::Failed);
 
-    loop {}
+    halt_loop()
 }
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     titanium::os_main();
 
-    loop {}
+    halt_loop()
+}
+
+pub fn halt_loop() -> ! {
+    loop {
+        instructions::hlt();
+    }
 }
