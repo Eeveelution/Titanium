@@ -66,6 +66,14 @@ impl TtyOutput for VgaWriter {
     }
 }
 
+impl core::fmt::Write for VgaWriter {
+    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        self.print(s.as_bytes());
+
+        Ok(())
+    }
+}
+
 impl VgaWriter {
     fn new() -> VgaWriter {
         VgaWriter { 
