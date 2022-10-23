@@ -2,11 +2,14 @@
 #![no_main] // disable all Rust-level entry points
 
 #![feature(abi_x86_interrupt)] //enable x86-interrupt
+#![feature(custom_test_frameworks)] //enables selfmade test frameworks
 
-mod titanium;
+#![test_runner(crate::titanium::testing::test_runner)]
+#![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
 
+mod titanium;
 use titanium::qemu::QemuExitCode;
 
 #[panic_handler]
@@ -20,14 +23,7 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    titanium::interrupts::initialize_idt();
-
-    serial_println!("Testing serial printing!");
-    serial_println!("{}", 1.0 / 3.0);
-
-    x86_64::instructions::interrupts::int3();
-
-    titanium::qemu::exit_qemu(QemuExitCode::Success);
+    titanium::os_main();
 
     loop {}
 }

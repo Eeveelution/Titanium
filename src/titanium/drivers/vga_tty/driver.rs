@@ -74,6 +74,7 @@ impl core::fmt::Write for VgaWriter {
     }
 }
 
+#[allow(dead_code)]
 impl VgaWriter {
     fn new() -> VgaWriter {
         VgaWriter { 
@@ -106,6 +107,7 @@ impl VgaWriter {
     }
 }
 
+#[allow(dead_code)]
 pub fn create_tty_output() -> impl TtyOutput {
     return VgaWriter::new();
 }
