@@ -4,7 +4,7 @@
 #![feature(abi_x86_interrupt)] //enable x86-interrupt
 #![feature(custom_test_frameworks)] //enables selfmade test frameworks
 
-#![test_runner(crate::titanium::testing::test_runner)]
+#![test_runner(crate::titanium::testing::test_runner::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
