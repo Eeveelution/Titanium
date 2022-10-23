@@ -1,4 +1,4 @@
-use crate::titanium::drivers::serial::serial::SERIAL_1;
+use crate::titanium::drivers::serial::SERIAL_1;
 
 #[doc(hidden)]
 pub fn _print(args: ::core::fmt::Arguments) {
@@ -20,12 +20,3 @@ macro_rules! serial_println {
     ($fmt:expr) => ($crate::titanium::drivers::serial::_print(   format_args!( concat!($fmt, "\n")) )    );
     ($fmt:expr, $($arg:tt)*) => ($crate::titanium::drivers::serial::_print(  format_args!(  concat!($fmt, "\n"), $($arg)*) ) );
 }
-
-
-//#[macro_export]
-//macro_rules! serial_println {
-//    () => ($crate::titanium::drivers::serial::serial_print!("\n"));
-//    ($fmt:expr) => ($crate::titanium::drivers::serial::serial_print!());
-//    ($fmt:expr, $($arg:tt)*) => ($crate::titanium::drivers::serial::serial_print!(
-//        ));
-//}
