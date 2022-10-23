@@ -1,7 +1,5 @@
 use crate::titanium::tty::TtyOutput;
 
-const VGA_BUFFER: *mut u8 = 0xb8000 as *mut u8; 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(dead_code)]
 #[repr(u8)]
@@ -63,11 +61,6 @@ pub struct VgaWriter {
 impl TtyOutput for VgaWriter {
     fn print(&mut self, bytes: &[u8]) {
         for (_, &byte) in bytes.iter().enumerate() {
-            //unsafe {
-            //    *VGA_BUFFER.offset(i as isize * 2) = byte;
-            //    *VGA_BUFFER.offset(i as isize * 2 + 1) = 0xb;
-            //}
-
             self.print_char(&byte, CharacterColor::new(VgaColor::White, VgaColor::Black));
         }
     }
@@ -75,15 +68,6 @@ impl TtyOutput for VgaWriter {
 
 impl VgaWriter {
     fn new() -> VgaWriter {
-        let empty = ScreenCharacter { 
-            ascii_character: 0, 
-            color_code: 
-                CharacterColor::new(
-                    VgaColor::White, 
-                    VgaColor::Black
-                ) 
-        };
-
         VgaWriter { 
             buffer: unsafe { &mut *(0xb8000 as *mut VgaBuffer) }, 
             current_column: 0, 
@@ -95,10 +79,12 @@ impl VgaWriter {
         match data {
             b'\n' => {
                 self.current_row += 1;
+                self.current_column = 0;
             },
             byte => {
                 if self.current_column >= BUFFER_WIDTH {
                     self.current_row += 1;
+                    self.current_column = 0;
                 }
 
                 self.buffer.chars[self.current_row][self.current_column] = ScreenCharacter {

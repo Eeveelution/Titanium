@@ -10,11 +10,12 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
 
-static HELLO: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVW";
-
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    titanium::tty::print(HELLO);
+    let mut vga_tty = titanium::drivers::vga_tty::create_tty_output();
+
+    titanium::tty::print_string(&mut vga_tty, "Hello, world!\n");
+    titanium::tty::print_string(&mut vga_tty, "Titanium TTY test!\n");
 
     loop {}
 }

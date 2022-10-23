@@ -6,18 +6,10 @@ pub trait TtyOutput {
 
 const REQUIRED_TTY_OUTPUTS: usize = 1;
 
+pub fn print(tty_output: &mut impl TtyOutput, data: &[u8]) {
+    tty_output.print(data)
+}
 
-pub fn print(data: &[u8]) {
-    let mut tty_outputs: [ Option<&mut dyn TtyOutput> ; REQUIRED_TTY_OUTPUTS] = [None; REQUIRED_TTY_OUTPUTS];
-
-    let mut vga_tty = titanium::drivers::vga_tty::create_tty_output();
-
-    tty_outputs[0] = Some(&mut vga_tty);
-
-    for(i, output) in tty_outputs.iter_mut().enumerate() {
-        match output {
-            Some(tty_output) => tty_output.print(data), 
-            None => (),
-        };
-    }
+pub fn print_string(tty_output: &mut impl TtyOutput, string: &str) {
+    print(tty_output, string.as_bytes())
 }
