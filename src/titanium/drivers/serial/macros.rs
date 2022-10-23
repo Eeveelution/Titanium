@@ -1,10 +1,14 @@
+use x86_64::instructions::interrupts;
+
 use crate::titanium::drivers::serial::SERIAL_1;
 
 #[doc(hidden)]
 pub fn _print(args: ::core::fmt::Arguments) {
     use core::fmt::Write;
 
-    SERIAL_1.lock().write_fmt(args).expect("Printing to SERIAL1 failed!");
+    interrupts::without_interrupts(|| {
+        SERIAL_1.lock().write_fmt(args).expect("Printing to SERIAL1 failed!");
+    })
 }
 
 #[macro_export]

@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use x86_64::{structures::{tss::TaskStateSegment, gdt::{GlobalDescriptorTable, Descriptor, self, SegmentSelector}}, VirtAddr};
+use x86_64::{structures::{tss::TaskStateSegment, gdt::{GlobalDescriptorTable, Descriptor, SegmentSelector}}, VirtAddr};
 
 pub const DOUBLE_FAULT_STACK_INDEX: u16 = 0;
 pub const DOUBLE_FAULT_STACK_SIZE_KB: usize = 64;
