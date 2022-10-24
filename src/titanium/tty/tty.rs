@@ -1,3 +1,5 @@
+use lazy_static::lazy_static;
+use spin::Mutex;
 use x86_64::instructions::interrupts;
 
 pub trait TtyOutput : Send {
@@ -6,6 +8,17 @@ pub trait TtyOutput : Send {
 
 #[allow(dead_code)]
 const REQUIRED_TTY_OUTPUTS: usize = 1;
+
+lazy_static! {
+    pub static ref TTY_OUTPUTS: 
+    [  
+        Mutex< 
+            Option< 
+                &'static mut dyn TtyOutput 
+            > 
+        >; REQUIRED_TTY_OUTPUTS
+    ] = [ Mutex::new(None); REQUIRED_TTY_OUTPUTS];
+}
 
 #[allow(dead_code)]
 pub fn print(tty_output: &mut impl TtyOutput, data: &[u8]) {
